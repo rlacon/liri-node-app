@@ -1,6 +1,4 @@
 require("dotenv").config();
-// fs.readFile("random.txt", "utf8", function (error, data) {
-// })
 var fs = require("fs");
 var moment = require('moment');
 var Spotify = require("node-spotify-api");
@@ -14,10 +12,7 @@ var operand = process.argv[2];
 var getMeBands = function (artist) {
     var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"; 
     console.log(queryUrl);
-    // Searching for an artist will render the following information about each event::
-    // * Name of the venue
-    // * Venue location
-    // * Date of the Event (use moment to format this as "MM/DD/YYYY")
+
     axios.get(queryUrl).then(
         function (response) {
             if (response.data[0]) {
@@ -94,6 +89,21 @@ var pick = function (caseData, functionData) {
 var runThis = function (argOne, argTwo) {
     pick(argOne, argTwo);
 };
+
+var doWhatItSays = function() {
+    // 1) Open random.txt
+    fs.readFile("random.txt", "utf8", function (error, data) {
+        if(error) {
+            console.log(error);
+        } else {
+            console.log("data: " + data);
+            // 2) Split data by comma
+            var command = data.split(",");
+            // 3) Run the command
+            pick(command[0], command[1]);
+        }
+    })
+}
 
 // MAIN PROCESS
 // =====================================
