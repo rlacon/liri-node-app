@@ -2,6 +2,7 @@ require("dotenv").config();
 // fs.readFile("random.txt", "utf8", function (error, data) {
 // })
 var fs = require("fs");
+var moment = require('moment');
 var Spotify = require("node-spotify-api");
 var keys = require("./keys.js");
 var axios = require("axios");
@@ -9,7 +10,25 @@ var spotify = new Spotify(keys.spotify);
 var song = process.argv[2];
 var operand = process.argv[2];
 
-// OMDB is working -----------------------------------------------------------------
+// Bands in Town -----------------------------------------------------------------
+var getMeBands = function (artist) {
+    var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"; 
+    console.log(queryUrl);
+    // Searching for an artist will render the following information about each event::
+    // * Name of the venue
+    // * Venue location
+    // * Date of the Event (use moment to format this as "MM/DD/YYYY")
+    axios.get(queryUrl).then(
+        function (response) {
+            if (response.data[0]) {
+                console.log("Venue name: " + response.data[0].venue.name);
+                console.log("Venue location: " + response.data[0].venue.city + ", " + response.data[0].venue.region);
+                console.log("Date of event (MM/DD/YYYY): " + moment(response.data[0].datetime).format('MM DD YYYY'));
+            }
+        });
+}
+
+// OMDB -----------------------------------------------------------------
 var getMeMovie = function (movieName) {
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
@@ -31,7 +50,7 @@ var getMeMovie = function (movieName) {
         });
 }
 
-// Spotify is working -----------------------------------------------------------------
+// Spotify -----------------------------------------------------------------
 
 var getMeSpotify = function(song) {
 spotify
@@ -55,7 +74,7 @@ spotify
 var pick = function (caseData, functionData) {
     switch (caseData) {
         case "concert-this":
-            getMyBands(functionData);
+            getMeBands(functionData);
             break;
         case "spotify-this-song":
             getMeSpotify(functionData);
